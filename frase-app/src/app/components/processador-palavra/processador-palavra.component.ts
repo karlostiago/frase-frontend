@@ -1,7 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ProcessadorMensagemService} from "../../service/processador-mensagem.service";
-
-import {MessageService} from "primeng/api";
+import {NotificacaoService} from "../../service/notificacao.service";
 
 @Component({
   selector: 'app-processador-palavra',
@@ -15,7 +14,7 @@ export class ProcessadorPalavraComponent implements OnInit {
     @Output() atualizarTabela: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private processadorMensagemService: ProcessadorMensagemService,
-                private messageService: MessageService) {
+                private notificacaoService: NotificacaoService) {
     }
 
     ngOnInit() { }
@@ -23,18 +22,10 @@ export class ProcessadorPalavraComponent implements OnInit {
     processar() {
         this.validarTextoInvalido();
         this.processadorMensagemService.processar(this.texto).then(response => {
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Sucesso',
-                detail: 'Mensagem alocada para processamento.'
-            });
-            this.atualizarTabela.emit("sucesso");
+            this.notificacaoService.successo('Mensagem alocada para processamento.');
+            this.enviarUltimaMensagemProcessada();
         }).catch(error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error
-            });
+            this.notificacaoService.erro('Ocorreu um erro ao processar a mensagem. ' + error);
         });
     }
 
@@ -42,13 +33,17 @@ export class ProcessadorPalavraComponent implements OnInit {
         this.texto = "";
     }
 
+    private enviarUltimaMensagemProcessada() {
+        this.processadorMensagemService.buscarUltimaMensagemProcessada().then(response => {
+            this.atualizarTabela.emit(response);
+        }).catch(error => {
+            this.notificacaoService.erro('Ocorreu um erro ao enviar a mensagem. ' + error);
+        });
+    }
+
     private validarTextoInvalido() {
         if (this.texto.length === 0) {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Por gentileza informe ao menos uma palavra, para que seja possivel realizar o processamento.'
-            });
+            this.notificacaoService.erro('Por gentileza informe ao menos uma palavra, para que seja possivel realizar o processamento.')
             throw new Error();
         }
     }
