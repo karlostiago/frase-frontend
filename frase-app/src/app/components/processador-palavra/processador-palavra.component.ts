@@ -26,7 +26,7 @@ export class ProcessadorPalavraComponent implements OnInit {
             this.messageService.add({
                 severity: 'success',
                 summary: 'Sucesso',
-                detail: 'Mensagem alocada para processamento com sucesso.'
+                detail: 'Mensagem alocada para processamento.'
             });
             this.atualizarTabela.emit("sucesso");
         }).catch(error => {
