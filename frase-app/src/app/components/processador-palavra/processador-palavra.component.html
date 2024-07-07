@@ -1,0 +1,19 @@
+<div class="row g-3">
+    <div class="col-md-12 col-sm-12 mb-10">
+        <div class="card">
+            <div class="card-header">
+                <h5>Processamento de palavras</h5>
+            </div>
+
+            <div class="card-body">
+                <label for="texto" class="form-label">Insira uma frase:</label>
+                <textarea name="texto" class="form-control" id="texto" rows="3" [(ngModel)]="texto"></textarea>
+            </div>
+
+            <div class="card-footer">
+                <p-button label="processar" (onClick)="processar()"></p-button>
+                <p-button label="limpar" class="m-2" (onClick)="limpar()"></p-button>
+            </div>
+        </div>
+    </div>
+</div>
